@@ -1,5 +1,8 @@
 const gameBoard = (() => {
     var board = ["", "", "", "", "", "", "", "", ""];
+    var col = [0, 0, 0];
+    var row = [0, 0, 0];
+    var diag = [0, 0];
 
     // Cache DOM
     var grid = document.getElementsByClassName("grid-container")[0];
@@ -15,6 +18,20 @@ const gameBoard = (() => {
     function addMove(index, value){
         board.splice(index, 1, value);
         _render(index);
+        _addToTracker(index, value);
+        _checkGame(index, value);
+    }
+
+    function _addToTracker(index, value){
+        if(value == "X"){
+            //
+        }
+    }
+
+    function _checkGame(index, value){
+        if(board.filter(Boolean).length > 4){
+            //
+        }
     }
 
     return{
