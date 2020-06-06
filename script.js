@@ -7,9 +7,17 @@ const gameBoard = (() => {
     for(i = 0; i < grid.getElementsByTagName("div").length; i++){
         gridItems.push(grid.getElementsByTagName("div")[i]);
     }
+    var startButton = document.getElementById("startButton");
 
     function _render(index){
         gridItems[index].innerHTML = board[index];
+    }
+
+    function reset(){
+        board = ["", "", "", "", "", "", "", "", ""];
+        for(i = 0; i < gridItems.length; i++){
+            _render(i);
+        }
     }
 
     function addMove(index, value){
@@ -19,11 +27,8 @@ const gameBoard = (() => {
     }
 
     function _checkGame(index){       
-        if(countTurns() == 9){
-            displayController.updateDisplay("tie");
-        }
         // Players can't win unless there have been at least 5 turns
-        else if(countTurns() > 4){
+        if(countTurns() > 4){
             // Check columns
             for(i = 0; i < 3; i++){
                 if(board[i] != "" && board[i] == board[i+3] && board[i] == board[i+6]){
@@ -46,6 +51,9 @@ const gameBoard = (() => {
                 displayController.updateDisplay(board[2]);
             }
         }
+        else if(countTurns() == 9){
+            displayController.updateDisplay("tie");
+        }
     }
 
     function countTurns(){
@@ -56,6 +64,8 @@ const gameBoard = (() => {
         gridItems,
         addMove,
         countTurns,
+        startButton,
+        reset,
     };
 })();
 
@@ -66,6 +76,8 @@ const displayController = (() => {
             _checkEligibility(item, index);
         });
     });
+    // Attach EventListener to button
+    gameBoard.startButton.addEventListener("click", gameBoard.reset);
 
     function _checkEligibility(item, index){
         if(item.innerHTML === ""){
