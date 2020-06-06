@@ -1,6 +1,6 @@
 const gameBoard = (() => {
     var board = ["", "", "", "", "", "", "", "", ""];
-    var gameOver = false;
+    var gameOver = true;
 
     // Cache DOM
     var grid = document.getElementsByClassName("grid-container")[0];
@@ -48,7 +48,7 @@ const gameBoard = (() => {
             }
         }
         if(countTurns() == 9){
-            displayController.declareWinner("tie");
+            displayController.declareWinner("It's a tie game!");
         }
     }
 
@@ -85,7 +85,23 @@ const gameTracker = (() => {
     var resultSection = document.getElementsByClassName("belowGrid")[0];
 
     // Attach EventListener to button
-    startButton.addEventListener("click", gameBoard.reset);
+    startButton.addEventListener("click", () => {
+        // Check if players exist and set name if not
+        if(Player1.getSymbol() == null){
+            displayController.setName();
+        }
+        gameBoard.reset();
+    });
+
+    // Create text input elements
+    var textBox1 = document.createElement("input");
+    textBox1.setAttribute("type", "text");
+    textBox1.setAttribute("placeholder", "Enter Player 1 name");
+    var textBox2 = document.createElement("input");
+    textBox2.setAttribute("type", "text");
+    textBox2.setAttribute("placeholder", "Enter Player 2 name");
+    resultSection.appendChild(textBox1);
+    resultSection.appendChild(textBox2);
 
     function wipeAway(){
         resultSection.innerHTML = "";
@@ -110,6 +126,13 @@ const displayController = (() => {
     }
 
     function declareWinner(result){
+        if(result == Player1.getSymbol()){
+            result = Player1.getName() + " wins!";
+        }
+        else if(result == Player2.getSymbol()){
+            result = Player2.getName() + " wins!";
+        }
+        
         var resultH2 = document.createElement("h2");
         resultH2.innerHTML = result;
         gameTracker.resultSection.appendChild(resultH2);
@@ -117,9 +140,26 @@ const displayController = (() => {
         gameBoard.gameOver = true;
     }
 
+    function setName(){
+        var playerNames = document.getElementsByTagName("input");
+        if(playerNames[0].value == ""){
+            Player1.modPlayer("Player 1", "X");
+        }
+        else{
+            Player1.modPlayer(playerNames[0].value, "X");
+        }
+        if(playerNames[1].value == ""){
+            Player2.modPlayer("Player 2", "O");
+        }
+        else{
+            Player2.modPlayer(playerNames[1].value, "O");
+        }
+    }
+
     return{
         checkEligibility,
         declareWinner,
+        setName,
     }
 
 })();
@@ -127,10 +167,18 @@ const displayController = (() => {
 const Player = (name, symbol) => {
     const getName = () => name;
     const getSymbol = () => symbol;
+    const modPlayer = (modName, modSymbol) => {
+        name = modName;
+        symbol = modSymbol;
+    }
 
     return{
         getName,
         getSymbol,
+        modPlayer,
     }
 
 };
+
+const Player1 = Player(null, null);
+const Player2 = Player(null, null);

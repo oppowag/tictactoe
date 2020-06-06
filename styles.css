@@ -30,4 +30,9 @@
 
 .belowGrid{
     text-align: center;
+    margin-bottom: 10px;
+}
+
+input{
+    margin: 2px;
 }
